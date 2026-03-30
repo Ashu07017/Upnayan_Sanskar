@@ -21,6 +21,7 @@ After the rituals are completed, this space will be updated with photographs and
 ## 🙏 A Personal Note
 
 This is not just a website, but a small effort to preserve a meaningful milestone in a simple and modern way.
+Website Link- https://upnayan-sanskar.netlify.app/
 
 ---
 
