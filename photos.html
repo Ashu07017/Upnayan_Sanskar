@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Memories — Upanayan Sanskar</title>
+
+<!-- Google Fonts: Cormorant Garamond (display) + Jost (body) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Jost:wght@200;300;400&family=Noto+Sans+Devanagari:wght@300;400&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   CSS CUSTOM PROPERTIES — THEME
+   ============================================================ */
+:root {
+  --maroon:       #6B0E1E;
+  --deep-maroon:  #3D0810;
+  --gold:         #C8922A;
+  --gold-light:   #E8B84B;
+  --gold-pale:    #F5DFA0;
+  --saffron:      #E07B39;
+  --cream:        #FAF3E0;
+  --cream-dark:   #F0E6C8;
+  --ivory:        #FFFDF5;
+  --text-dark:    #1A0A04;
+  --text-mid:     #5C3A1E;
+
+  --ff-display: 'Cormorant Garamond', serif;
+  --ff-body:    'Jost', sans-serif;
+  --ff-deva:    'Noto Sans Devanagari', sans-serif;
+
+  --ease-cinematic: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-soft:      cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--deep-maroon);
+  color: var(--cream);
+  font-family: var(--ff-body);
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none; /* custom cursor — overridden on touch below */
+}
+@media (hover: none) {
+  body, button, a { cursor: auto !important; }
+  #cursor, #cursor-ring { display: none !important; }
+}
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { text-decoration: none; color: inherit; }
+button { cursor: none; border: none; background: none; }
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+#cursor {
+  position: fixed;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--gold);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width .2s, height .2s, opacity .2s;
+  mix-blend-mode: screen;
+}
+#cursor-ring {
+  position: fixed;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-light);
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width .35s var(--ease-soft), height .35s var(--ease-soft), transform .08s linear, opacity .3s;
+  opacity: .5;
+}
+body:has(a:hover) #cursor,
+body:has(button:hover) #cursor { width: 22px; height: 22px; }
+
+/* ============================================================
+   CINEMATIC INTRO OVERLAY
+   ============================================================ */
+#intro-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 8000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  pointer-events: none;
+  transition: opacity 1.2s var(--ease-cinematic);
+}
+#intro-overlay.hidden { opacity: 0; pointer-events: none; }
+
+.intro-title {
+  font-family: var(--ff-display);
+  font-size: clamp(2rem, 6vw, 5rem);
+  font-weight: 300;
+  letter-spacing: .35em;
+  color: var(--gold-pale);
+  opacity: 0;
+  transform: translateY(24px);
+  animation: introFadeUp 1s .5s var(--ease-soft) forwards;
+}
+.intro-subtitle {
+  font-family: var(--ff-deva);
+  font-size: clamp(.9rem, 2vw, 1.3rem);
+  letter-spacing: .2em;
+  color: var(--saffron);
+  opacity: 0;
+  animation: introFadeUp 1s 1s var(--ease-soft) forwards;
+}
+.intro-line {
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  animation: introLine 1.2s 1.4s var(--ease-cinematic) forwards;
+}
+@keyframes introFadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes introLine {
+  to { width: clamp(120px, 30vw, 340px); }
+}
+
+/* ============================================================
+   FLOATING PETALS (canvas)
+   ============================================================ */
+#petal-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: .55;
+}
+
+/* ============================================================
+   STICKY NAV
+   ============================================================ */
+#main-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .9rem 2.5rem;
+  background: linear-gradient(180deg, rgba(26,8,4,.85) 0%, transparent 100%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background .4s;
+}
+#main-nav.scrolled {
+  background: rgba(26,8,4,.95);
+  box-shadow: 0 2px 24px rgba(0,0,0,.5);
+}
+
+.nav-back {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .78rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold-pale);
+  opacity: .75;
+  transition: opacity .25s;
+}
+.nav-back:hover { opacity: 1; }
+.nav-back svg { width: 14px; }
+
+.nav-chapters {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+.nav-chapters a {
+  font-size: .72rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: .6;
+  position: relative;
+  transition: opacity .3s;
+}
+.nav-chapters a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width .35s var(--ease-soft);
+}
+.nav-chapters a:hover,
+.nav-chapters a.active { opacity: 1; }
+.nav-chapters a:hover::after,
+.nav-chapters a.active::after { width: 100%; }
+
+.nav-sound {
+  font-size: .78rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gold-pale);
+  opacity: .7;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  transition: opacity .25s;
+}
+.nav-sound:hover { opacity: 1; }
+
+/* ============================================================
+   HERO / PAGE HEADER
+   ============================================================ */
+#hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 60%, #5C1020 0%, var(--deep-maroon) 65%);
+}
+
+/* Decorative mandala ring */
+.mandala-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(200, 146, 42, .15);
+  animation: rotateRing 30s linear infinite;
+}
+.mandala-ring:nth-child(1) { width: 500px; height: 500px; animation-duration: 30s; }
+.mandala-ring:nth-child(2) { width: 700px; height: 700px; border-width: .5px; animation-direction: reverse; animation-duration: 50s; }
+.mandala-ring:nth-child(3) { width: 900px; height: 900px; animation-duration: 70s; opacity: .5; }
+@keyframes rotateRing { to { transform: rotate(360deg); } }
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 2rem;
+}
+.hero-eyebrow {
+  font-family: var(--ff-deva);
+  font-size: .9rem;
+  letter-spacing: .3em;
+  color: var(--saffron);
+  margin-bottom: 1.2rem;
+  opacity: 0;
+  animation: fadeUp .9s 2.8s var(--ease-soft) forwards;
+}
+.hero-title {
+  font-family: var(--ff-display);
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--gold-pale);
+  opacity: 0;
+  animation: fadeUp 1s 3s var(--ease-soft) forwards;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+.hero-subtitle {
+  margin-top: 1.5rem;
+  font-size: clamp(.85rem, 1.5vw, 1rem);
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--cream-dark);
+  opacity: 0;
+  animation: fadeUp 1s 3.3s var(--ease-soft) forwards;
+}
+.hero-divider {
+  margin: 2rem auto 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0;
+  animation: dividerGrow 1.2s 3.6s var(--ease-cinematic) forwards;
+}
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(20px); }
+}
+@keyframes dividerGrow {
+  to { width: 200px; opacity: 1; }
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  font-size: .65rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--gold-pale);
+  opacity: 0;
+  animation: fadeUp .8s 4s var(--ease-soft) forwards;
+}
+.scroll-line {
+  width: 1px;
+  height: 48px;
+  background: linear-gradient(180deg, var(--gold), transparent);
+  animation: scrollPulse 2s 4.5s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: .3; transform: scaleY(1); }
+  50% { opacity: 1; transform: scaleY(1.2); }
+}
+
+/* ============================================================
+   CHAPTER DIVIDER
+   ============================================================ */
+.chapter-divider {
+  position: relative;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.chapter-divider::before,
+.chapter-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(200,146,42,.3));
+}
+.chapter-divider::after {
+  background: linear-gradient(270deg, transparent, rgba(200,146,42,.3));
+}
+.chapter-divider-icon {
+  margin: 0 2rem;
+  color: var(--gold);
+  font-size: 1.4rem;
+  letter-spacing: .1em;
+  opacity: .6;
+}
+
+/* ============================================================
+   SECTION (CHAPTER)
+   ============================================================ */
+.memory-section {
+  position: relative;
+  min-height: 100vh;
+  padding: 0 0 8rem;
+  overflow: hidden;
+}
+
+/* Parallax BG layer */
+.section-bg {
+  position: absolute;
+  inset: -20%;
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+  z-index: 0;
+  opacity: .07;
+}
+
+/* Section header */
+.section-header {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 7rem 2rem 5rem;
+}
+.section-number {
+  font-family: var(--ff-display);
+  font-size: clamp(5rem, 15vw, 12rem);
+  font-weight: 700;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(200,146,42,.12);
+  position: absolute;
+  top: 2rem; left: 50%;
+  transform: translateX(-50%);
+  line-height: 1;
+  user-select: none;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+}
+.section-date {
+  font-family: var(--ff-body);
+  font-size: .72rem;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: var(--saffron);
+  margin-bottom: .8rem;
+  opacity: 0;
+  transition: opacity .8s var(--ease-soft), transform .8s var(--ease-soft);
+  transform: translateY(16px);
+}
+.section-title {
+  font-family: var(--ff-display);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 300;
+  color: var(--gold-pale);
+  line-height: 1.1;
+  opacity: 0;
+  transition: opacity 1s .15s var(--ease-soft), transform 1s .15s var(--ease-soft);
+  transform: translateY(20px);
+}
+.section-tagline {
+  margin-top: 1rem;
+  font-size: clamp(.85rem, 1.5vw, 1rem);
+  color: var(--cream-dark);
+  letter-spacing: .15em;
+  opacity: 0;
+  transition: opacity 1s .3s var(--ease-soft);
+  transform: translateY(12px);
+}
+.section-header-line {
+  margin: 1.8rem auto 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  transition: width 1.2s .4s var(--ease-cinematic), opacity .5s .4s;
+  opacity: 0;
+}
+
+.memory-section.in-view .section-date,
+.memory-section.in-view .section-title,
+.memory-section.in-view .section-tagline {
+  opacity: 1;
+  transform: translateY(0);
+}
+.memory-section.in-view .section-header-line {
+  width: 180px;
+  opacity: 1;
+}
+
+/* ============================================================
+   PHOTO GRID
+   ============================================================ */
+.photo-grid {
+  position: relative;
+  z-index: 2;
+  padding: 0 clamp(1rem, 5vw, 5rem);
+  columns: 3;
+  column-gap: 1.2rem;
+}
+@media (max-width: 900px) { .photo-grid { columns: 2; } }
+@media (max-width: 560px) { .photo-grid { columns: 1; } }
+
+/* ==== ADD / REMOVE IMAGES HERE ==== */
+/* Each .photo-item wraps one image. Order = display order. */
+.photo-item {
+  break-inside: avoid;
+  margin-bottom: 1.2rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px;
+  cursor: none;
+  opacity: 0;
+  transform: translateY(30px) scale(.97);
+  transition: opacity .7s var(--ease-soft), transform .7s var(--ease-soft);
+  box-shadow: 0 8px 30px rgba(0,0,0,.4);
+}
+.photo-item.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Staggered delays via JS data attribute */
+.photo-item[data-delay="1"] { transition-delay: .05s; }
+.photo-item[data-delay="2"] { transition-delay: .12s; }
+.photo-item[data-delay="3"] { transition-delay: .19s; }
+.photo-item[data-delay="4"] { transition-delay: .26s; }
+.photo-item[data-delay="5"] { transition-delay: .33s; }
+.photo-item[data-delay="6"] { transition-delay: .40s; }
+.photo-item[data-delay="7"] { transition-delay: .47s; }
+.photo-item[data-delay="8"] { transition-delay: .54s; }
+
+.photo-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform .7s var(--ease-soft), filter .5s;
+  filter: brightness(.92) saturate(1.05);
+}
+.photo-item:hover img {
+  transform: scale(1.07);
+  filter: brightness(1) saturate(1.15);
+}
+
+/* Gold shimmer overlay on hover */
+.photo-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(200,146,42,.18), transparent 60%);
+  opacity: 0;
+  transition: opacity .4s;
+  z-index: 1;
+  pointer-events: none;
+}
+.photo-item:hover::before { opacity: 1; }
+
+/* Caption overlay */
+.photo-caption {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 1.4rem 1rem .8rem;
+  background: linear-gradient(0deg, rgba(26,8,4,.8) 0%, transparent 100%);
+  font-size: .7rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold-pale);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .35s, transform .35s;
+  z-index: 2;
+}
+.photo-item:hover .photo-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   VIDEO ITEM — same grid, same styling as photo-item
+   ============================================================ */
+.photo-item video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 3px;
+  /* Native controls override — kept minimal */
+  background: #000;
+  transition: filter .5s;
+  filter: brightness(.92);
+}
+.photo-item:hover video {
+  filter: brightness(1);
+}
+/* Video items: disable the click-to-lightbox cursor hint since
+   native controls handle playback inline */
+.photo-item.is-video {
+  cursor: default;
+}
+.photo-item.is-video::before {
+  /* Subtle shimmer still applies but softer */
+  background: linear-gradient(135deg, rgba(200,146,42,.10), transparent 60%);
+}
+/* Play badge overlay (shown before first play) */
+.video-play-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: rgba(26,8,4,.65);
+  border: 1.5px solid rgba(200,146,42,.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 3;
+  transition: opacity .3s;
+  color: var(--gold-pale);
+  font-size: 1.2rem;
+  padding-left: 3px; /* optical centering of ▶ */
+}
+.photo-item.is-video:hover .video-play-badge,
+.photo-item.is-video.playing .video-play-badge {
+  opacity: 0;
+}
+
+/* ============================================================
+   DOWNLOAD BUTTON — appears on hover, top-right corner
+   ============================================================ */
+.download-btn {
+  position: absolute;
+  top: .6rem;
+  right: .6rem;
+  z-index: 10;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(26,8,4,.72);
+  border: 1px solid rgba(200,146,42,.45);
+  color: var(--gold-pale);
+  font-size: .75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  opacity: 0;
+  transform: scale(.8) translateY(-4px);
+  transition: opacity .3s var(--ease-soft),
+              transform .3s var(--ease-soft),
+              background .2s,
+              border-color .2s;
+  cursor: pointer;
+  line-height: 1;
+}
+.photo-item:hover .download-btn {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+.download-btn:hover {
+  background: var(--maroon);
+  border-color: var(--gold);
+}
+/* Make sure download btn doesn't bubble click to lightbox */
+.download-btn { pointer-events: all; }
+
+/* ============================================================
+   VIDEO LIGHTBOX (separate from image lightbox)
+   ============================================================ */
+#video-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  background: rgba(5,1,0,.97);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .45s var(--ease-cinematic);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+#video-lightbox.active {
+  opacity: 1;
+  pointer-events: all;
+}
+#vlb-video {
+  max-width: 90vw;
+  max-height: 82vh;
+  border-radius: 3px;
+  box-shadow: 0 20px 80px rgba(0,0,0,.9);
+  background: #000;
+  transform: scale(.93);
+  opacity: 0;
+  transition: transform .5s var(--ease-cinematic), opacity .5s var(--ease-cinematic);
+  /* Allow native speed controls */
+  width: min(90vw, 960px);
+}
+#video-lightbox.active #vlb-video {
+  transform: scale(1);
+  opacity: 1;
+}
+#vlb-caption {
+  position: absolute;
+  bottom: -2rem;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: .68rem;
+  letter-spacing: .25em;
+  color: var(--gold-pale);
+  opacity: .6;
+  text-transform: uppercase;
+}
+.vlb-inner {
+  position: relative;
+}
+#vlb-close {
+  position: fixed;
+  top: 1.5rem; right: 1.5rem;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(200,146,42,.3);
+  background: rgba(26,8,4,.5);
+  color: var(--cream);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2101;
+  transition: background .25s;
+  cursor: pointer;
+}
+#vlb-close:hover { background: var(--maroon); }
+
+
+#lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(10,2,0,.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .45s var(--ease-cinematic);
+  backdrop-filter: blur(12px);
+}
+#lightbox.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.lb-inner {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#lb-img {
+  max-width: 88vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 2px;
+  box-shadow: 0 20px 80px rgba(0,0,0,.8);
+  transform: scale(.92);
+  opacity: 0;
+  transition: transform .5s var(--ease-cinematic), opacity .5s var(--ease-cinematic);
+}
+#lightbox.active #lb-img {
+  transform: scale(1);
+  opacity: 1;
+}
+#lb-caption {
+  position: absolute;
+  bottom: -2.2rem;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: .68rem;
+  letter-spacing: .25em;
+  color: var(--gold-pale);
+  opacity: .6;
+  text-transform: uppercase;
+}
+.lb-btn {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(200,146,42,.4);
+  background: rgba(26,8,4,.6);
+  color: var(--gold-pale);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .25s, border-color .25s;
+  z-index: 2001;
+}
+.lb-btn:hover { background: var(--maroon); border-color: var(--gold); }
+#lb-prev { left: 1.5rem; }
+#lb-next { right: 1.5rem; }
+#lb-close {
+  position: fixed;
+  top: 1.5rem; right: 1.5rem;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(200,146,42,.3);
+  background: rgba(26,8,4,.5);
+  color: var(--cream);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2001;
+  transition: background .25s;
+}
+#lb-close:hover { background: var(--maroon); }
+#lb-counter {
+  position: fixed;
+  bottom: 1.5rem; left: 50%;
+  transform: translateX(-50%);
+  font-size: .68rem;
+  letter-spacing: .3em;
+  color: var(--gold-pale);
+  opacity: .5;
+  z-index: 2001;
+}
+
+/* ============================================================
+   SECTION BACKGROUNDS (gradient meshes, unique per chapter)
+   ============================================================ */
+#section-ganesh { background: linear-gradient(180deg, #200610 0%, #3D0810 40%, #2A0E06 100%); }
+#section-grah   { background: linear-gradient(180deg, #1E0B15 0%, #32091A 40%, #1A0C08 100%); }
+#section-upan   { background: linear-gradient(180deg, #0E1524 0%, #16202E 40%, #0B0A04 100%); }
+
+/* ============================================================
+   SCROLL-TRIGGERED TEXT REVEAL (CINEMATIC UNIQUE FEATURE)
+   ============================================================ */
+.reveal-text {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  padding: 4rem clamp(1rem, 10vw, 12rem) 2rem;
+  overflow: hidden;
+}
+.reveal-line {
+  display: block;
+  font-family: var(--ff-display);
+  font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--gold-pale);
+  opacity: 0;
+  transform: translateY(110%);
+  transition: opacity .7s var(--ease-soft), transform .7s var(--ease-soft);
+  line-height: 1.6;
+  letter-spacing: .04em;
+}
+.reveal-text.in-view .reveal-line:nth-child(1) { opacity: .7; transform: translateY(0); transition-delay: 0s; }
+.reveal-text.in-view .reveal-line:nth-child(2) { opacity: .85; transform: translateY(0); transition-delay: .12s; }
+.reveal-text.in-view .reveal-line:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: .24s; }
+
+/* ============================================================
+   PAGE TURN TRANSITION OVERLAY
+   ============================================================ */
+#page-turn {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  pointer-events: none;
+  display: flex;
+}
+.pt-half {
+  flex: 1;
+  background: var(--deep-maroon);
+  transform-origin: center left;
+  transform: scaleX(0);
+  transition: transform .7s var(--ease-cinematic);
+}
+.pt-half:last-child {
+  transform-origin: center right;
+}
+#page-turn.active .pt-half {
+  transform: scaleX(1);
+}
+#page-turn.closing .pt-half {
+  transform: scaleX(0);
+}
+
+/* ============================================================
+   PHOTO COUNT BADGE
+   ============================================================ */
+.photo-count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  margin-top: 1.4rem;
+  font-size: .65rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: .55;
+  border: 1px solid rgba(200,146,42,.2);
+  padding: .3rem .9rem;
+  border-radius: 50px;
+}
+
+/* ============================================================
+   READING PROGRESS BAR
+   ============================================================ */
+#reading-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--maroon), var(--gold), var(--saffron));
+  z-index: 9000;
+  transition: width .1s linear;
+  pointer-events: none;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  padding: 6rem 2rem 4rem;
+  background: var(--deep-maroon);
+}
+.footer-om {
+  font-family: var(--ff-deva);
+  font-size: 3rem;
+  color: var(--gold);
+  opacity: .4;
+  display: block;
+  margin-bottom: 1rem;
+}
+.footer-text {
+  font-family: var(--ff-display);
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--gold-pale);
+  opacity: .6;
+  letter-spacing: .08em;
+}
+
+/* ============================================================
+   RESPONSIVE NAV
+   ============================================================ */
+@media (max-width: 700px) {
+  .nav-chapters { display: none; }
+  #main-nav { padding: .8rem 1.2rem; }
+}
+
+/* Mobile bottom chapter nav (pill bar) */
+#mobile-chapter-nav {
+  display: none;
+  position: fixed;
+  bottom: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 600;
+  background: rgba(26,8,4,.88);
+  border: 1px solid rgba(200,146,42,.25);
+  border-radius: 50px;
+  padding: .45rem .6rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  gap: .2rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,.5);
+}
+@media (max-width: 700px) {
+  #mobile-chapter-nav { display: flex; }
+}
+.mob-nav-btn {
+  font-family: var(--ff-body);
+  font-size: .58rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: .55;
+  padding: .4rem .85rem;
+  border-radius: 50px;
+  transition: background .25s, opacity .25s, color .25s;
+  white-space: nowrap;
+}
+.mob-nav-btn:hover,
+.mob-nav-btn.active {
+  background: var(--maroon);
+  color: var(--gold-pale);
+  opacity: 1;
+}
+</style>
+</head>
+<body>
+
+<!-- ====================================================
+     READING PROGRESS BAR
+     ==================================================== -->
+<div id="reading-progress"></div>
+
+<!-- ====================================================
+     CINEMATIC INTRO OVERLAY
+     ==================================================== -->
+<div id="intro-overlay">
+  <p class="intro-title">Smriti</p>
+  <div class="intro-line"></div>
+  <p class="intro-subtitle">स्मृति — Memories</p>
+</div>
+
+<!-- ====================================================
+     CUSTOM CURSOR
+     ==================================================== -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- ====================================================
+     FLOATING PETALS CANVAS
+     ==================================================== -->
+<canvas id="petal-canvas"></canvas>
+
+<!-- ====================================================
+     PAGE-TURN TRANSITION PANEL
+     ==================================================== -->
+<div id="page-turn">
+  <div class="pt-half"></div>
+  <div class="pt-half"></div>
+</div>
+
+<!-- ====================================================
+     IMAGE LIGHTBOX (for photos)
+     ==================================================== -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button id="lb-close" title="Close (Esc)">✕</button>
+  <button id="lb-prev" class="lb-btn" title="Previous (←)">‹</button>
+  <div class="lb-inner">
+    <img id="lb-img" src="" alt="" />
+    <div id="lb-caption"></div>
+  </div>
+  <button id="lb-next" class="lb-btn" title="Next (→)">›</button>
+  <div id="lb-counter"></div>
+</div>
+
+<!-- ====================================================
+     VIDEO LIGHTBOX (for videos)
+     ==================================================== -->
+<div id="video-lightbox" role="dialog" aria-modal="true" aria-label="Video viewer">
+  <button id="vlb-close" title="Close (Esc)">✕</button>
+  <div class="vlb-inner">
+    <!-- src and controls set dynamically by JS -->
+    <video id="vlb-video" controls preload="metadata" playsinline></video>
+    <div id="vlb-caption"></div>
+  </div>
+</div>
+
+<!-- ====================================================
+     STICKY NAVIGATION
+     ==================================================== -->
+<nav id="main-nav">
+  <a href="index.html" class="nav-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M19 12H5M12 5l-7 7 7 7"/>
+    </svg>
+    Back to Invitation
+  </a>
+
+  <ul class="nav-chapters">
+    <li><a href="#section-ganesh" data-nav="ganesh">Ganesh Pooja</a></li>
+    <li><a href="#section-grah"   data-nav="grah">Grah Pooja</a></li>
+    <li><a href="#section-upan"   data-nav="upan">Upanayan Sanskar</a></li>
+  </ul>
+
+  <button class="nav-sound" id="sound-toggle" title="Toggle Music">
+    <span id="sound-icon">♪</span>
+    <span id="sound-label">Music</span>
+  </button>
+</nav>
+
+<!-- ====================================================
+     HERO SECTION
+     ==================================================== -->
+<section id="hero">
+  <!-- Decorative mandala rings -->
+  <div class="mandala-ring"></div>
+  <div class="mandala-ring"></div>
+  <div class="mandala-ring"></div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">10 – 12 April 2026 · Haldwani</p>
+    <h1 class="hero-title">A Chapter of<br><em>Sacred Memories</em></h1>
+    <p class="hero-subtitle">Upanayan Sanskar &nbsp;·&nbsp; A Journey into Light</p>
+    <div class="hero-divider"></div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>Scroll to begin</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ====================================================
+     CHAPTER 1 — GANESH POOJA (10th April)
+     ==================================================== -->
+<section class="memory-section" id="section-ganesh">
+  <div class="section-bg" style="background-image:url('https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=1800');"></div>
+
+  <div class="section-header">
+    <div class="section-number" aria-hidden="true">01</div>
+    <p class="section-date">10th April 2025</p>
+    <h2 class="section-title">Ganesh Pooja</h2>
+    <p class="section-tagline">Invoking the remover of obstacles · The sacred beginning</p>
+    <div class="section-header-line"></div>
+    <div class="photo-count-badge" data-count-for="ganesh">
+      <span>&#9670;</span> <span class="count-num">0</span> Photographs
+    </div>
+  </div>
+
+  <!-- Cinematic quote reveal -->
+  <div class="reveal-text">
+    <span class="reveal-line">"Every auspicious beginning is blessed</span>
+    <span class="reveal-line">by the gentle wisdom of Lord Ganesha —</span>
+    <span class="reveal-line">the keeper of new journeys."</span>
+  </div>
+
+  <!-- ── GANESH POOJA MEDIA ──────────────────────────────────────────────
+       HOW TO ADD A PHOTO:
+         <div class="photo-item" data-caption="Your Caption">
+           <img src="images/ganesh01.webp" alt="Description" loading="lazy" />
+           <a class="download-btn" href="images/ganesh01.webp" download title="Download">⬇</a>
+           <div class="photo-caption">Your Caption</div>
+         </div>
+
+       HOW TO ADD A VIDEO:
+         <div class="photo-item is-video" data-caption="Your Caption" data-type="video">
+           <video src="videos/ganesh01.mp4" preload="metadata" controls playsinline></video>
+           <div class="video-play-badge">▶</div>
+           <a class="download-btn" href="videos/ganesh01.mp4" download title="Download">⬇</a>
+           <div class="photo-caption">Your Caption</div>
+         </div>
+
+       TO DELETE: Remove the entire <div class="photo-item">...</div> block.
+       TO REORDER: Cut and paste the blocks in the order you want.
+  ──────────────────────────────────────────────────────────────────────── -->
+  <div class="photo-grid" data-section="ganesh">
+
+<!-- DAY 1 IMAGES START -->
+
+<div class="photo-item">
+  <img src="images/day-1/1.jpeg" loading="lazy" alt="Ganesh Pooja 1">
+  <a class="download-btn" href="images/day-1/1.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/2.jpeg" loading="lazy" alt="Ganesh Pooja 2">
+  <a class="download-btn" href="images/day-1/2.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/3.jpeg" loading="lazy" alt="Ganesh Pooja 3">
+  <a class="download-btn" href="images/day-1/3.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/4.jpeg" loading="lazy" alt="Ganesh Pooja 4">
+  <a class="download-btn" href="images/day-1/4.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/5.jpeg" loading="lazy" alt="Ganesh Pooja 5">
+  <a class="download-btn" href="images/day-1/5.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/6.jpeg" loading="lazy" alt="Ganesh Pooja 6">
+  <a class="download-btn" href="images/day-1/6.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/7.jpeg" loading="lazy" alt="Ganesh Pooja 7">
+  <a class="download-btn" href="images/day-1/7.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/8.jpeg" loading="lazy" alt="Ganesh Pooja 8">
+  <a class="download-btn" href="images/day-1/8.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/9.jpeg" loading="lazy" alt="Ganesh Pooja 9">
+  <a class="download-btn" href="images/day-1/9.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/10.jpeg" loading="lazy" alt="Ganesh Pooja 10">
+  <a class="download-btn" href="images/day-1/10.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/11.jpeg" loading="lazy" alt="Ganesh Pooja 11">
+  <a class="download-btn" href="images/day-1/11.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/12.jpeg" loading="lazy" alt="Ganesh Pooja 12">
+  <a class="download-btn" href="images/day-1/12.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/13.jpeg" loading="lazy" alt="Ganesh Pooja 13">
+  <a class="download-btn" href="images/day-1/13.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/14.jpeg" loading="lazy" alt="Ganesh Pooja 14">
+  <a class="download-btn" href="images/day-1/14.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/15.jpeg" loading="lazy" alt="Ganesh Pooja 15">
+  <a class="download-btn" href="images/day-1/15.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/16.jpeg" loading="lazy" alt="Ganesh Pooja 16">
+  <a class="download-btn" href="images/day-1/16.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/17.jpeg" loading="lazy" alt="Ganesh Pooja 17">
+  <a class="download-btn" href="images/day-1/17.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/18.jpeg" loading="lazy" alt="Ganesh Pooja 18">
+  <a class="download-btn" href="images/day-1/18.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/19.jpeg" loading="lazy" alt="Ganesh Pooja 19">
+  <a class="download-btn" href="images/day-1/19.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/20.jpeg" loading="lazy" alt="Ganesh Pooja 20">
+  <a class="download-btn" href="images/day-1/20.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/21.jpeg" loading="lazy" alt="Ganesh Pooja 21">
+  <a class="download-btn" href="images/day-1/21.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/22.jpeg" loading="lazy" alt="Ganesh Pooja 22">
+  <a class="download-btn" href="images/day-1/22.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/23.jpeg" loading="lazy" alt="Ganesh Pooja 23">
+  <a class="download-btn" href="images/day-1/23.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/24.jpeg" loading="lazy" alt="Ganesh Pooja 24">
+  <a class="download-btn" href="images/day-1/24.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/25.jpeg" loading="lazy" alt="Ganesh Pooja 25">
+  <a class="download-btn" href="images/day-1/25.jpeg" download>⬇</a>
+</div>
+
+<div class="photo-item">
+  <img src="images/day-1/26.jpeg" loading="lazy" alt="Ganesh Pooja 26">
+  <a class="download-btn" href="images/day-1/26.jpeg" download>⬇</a>
+</div>
+
+<!-- DAY 1 IMAGES END -->
+  </div><!-- /photo-grid ganesh -->
+</section>
+
+<div class="chapter-divider">
+  <span class="chapter-divider-icon">✦</span>
+</div>
+
+<!-- ====================================================
+     CHAPTER 2 — GRAH POOJA (11th April)
+     ==================================================== -->
+<section class="memory-section" id="section-grah">
+  <div class="section-bg" style="background-image:url('https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=1800');"></div>
+
+  <div class="section-header">
+    <div class="section-number" aria-hidden="true">02</div>
+    <p class="section-date">11th April 2025</p>
+    <h2 class="section-title">Grah Pooja</h2>
+    <p class="section-tagline">Harmonising the heavens · Seeking celestial blessings</p>
+    <div class="section-header-line"></div>
+    <div class="photo-count-badge" data-count-for="grah">
+      <span>&#9670;</span> <span class="count-num">0</span> Photographs
+    </div>
+  </div>
+
+  <div class="reveal-text">
+    <span class="reveal-line">"The nine planets look upon us</span>
+    <span class="reveal-line">with grace when we offer them</span>
+    <span class="reveal-line">devotion and a pure heart."</span>
+  </div>
+
+  <!-- ── GRAH POOJA MEDIA ──────────────────────────────────────────────
+       HOW TO ADD A PHOTO:
+         <div class="photo-item" data-caption="Your Caption">
+           <img src="images/grah01.webp" alt="Description" loading="lazy" />
+           <a class="download-btn" href="images/grah01.webp" download title="Download">⬇</a>
+           <div class="photo-caption">Your Caption</div>
+         </div>
+
+       HOW TO ADD A VIDEO:
+         <div class="photo-item is-video" data-caption="Your Caption" data-type="video">
+           <video src="videos/grah01.mp4" preload="metadata" controls playsinline></video>
+           <div class="video-play-badge">▶</div>
+           <a class="download-btn" href="videos/grah01.mp4" download title="Download">⬇</a>
+           <div class="photo-caption">Your Caption</div>
+         </div>
+
+       TO DELETE: Remove the entire <div class="photo-item">...</div> block.
+       TO REORDER: Cut and paste the blocks in the order you want.
+  ──────────────────────────────────────────────────────────────────────── -->
+  <div class="photo-grid" data-section="grah">
+
+    <!-- PHOTO 1 — Grah Pooja -->
+<!-- DAY 2 IMAGES START -->
+
+<div class="photo-item">
+  <img src="images/day-2/1.jpeg" loading="lazy" alt="Grah Pooja 1">
+</div>
+
+<div class="photo-item">
+  <img src="images/day-2/2.jpeg" loading="lazy" alt="Grah Pooja 2">
+</div>
+
+<div class="photo-item">
+  <img src="images/day-2/3.jpeg" loading="lazy" alt="Grah Pooja 3">
+</div>
+
+<div class="photo-item">
+  <img src="images/day-2/4.jpeg" loading="lazy" alt="Grah Pooja 4">
+</div>
+
+<div class="photo-item">
+  <img src="images/day-2/5.jpeg" loading="lazy" alt="Grah Pooja 5">
+</div>
+
+<div class="photo-item">
+  <img src="images/day-2/6.jpeg" loading="lazy" alt="Grah Pooja 6">
+</div>
+
+<!-- DAY 2 IMAGES END -->
+</section>
+
+<div class="chapter-divider">
+  <span class="chapter-divider-icon">✦</span>
+</div>
+
+<!-- ====================================================
+     CHAPTER 3 — UPANAYAN SANSKAR (12th April)
+     ==================================================== -->
+<section class="memory-section" id="section-upan">
+  <div class="section-bg" style="background-image:url('https://images.unsplash.com/photo-1446329813274-7c9036bd9a1f?w=1800');"></div>
+
+  <div class="section-header">
+    <div class="section-number" aria-hidden="true">03</div>
+    <p class="section-date">12th April 2025</p>
+    <h2 class="section-title">Upanayan Sanskar</h2>
+    <p class="section-tagline">The sacred thread · The second birth · The dawn of learning</p>
+    <div class="section-header-line"></div>
+    <div class="photo-count-badge" data-count-for="upan">
+      <span>&#9670;</span> <span class="count-num">0</span> Photographs
+    </div>
+  </div>
+
+  <div class="reveal-text">
+    <span class="reveal-line">"This is not merely a ceremony —</span>
+    <span class="reveal-line">it is the moment a soul steps forward</span>
+    <span class="reveal-line">to carry the light of ancient wisdom."</span>
+  </div>
+
+  <!-- ── UPANAYAN SANSKAR MEDIA ────────────────────────────────────────────
+       HOW TO ADD A PHOTO:
+         <div class="photo-item" data-caption="Your Caption">
+           <img src="images/upan01.webp" alt="Description" loading="lazy" />
+           <a class="download-btn" href="images/upan01.webp" download title="Download">⬇</a>
+           <div class="photo-caption">Your Caption</div>
+         </div>
+
+       HOW TO ADD A VIDEO:
+         <div class="photo-item is-video" data-caption="Your Caption" data-type="video">
+           <video src="videos/upan01.mp4" preload="metadata" controls playsinline></video>
+           <div class="video-play-badge">▶</div>
+           <a class="download-btn" href="videos/upan01.mp4" download title="Download">⬇</a>
+           <div class="photo-caption">Your Caption</div>
+         </div>
+
+       TO DELETE: Remove the entire <div class="photo-item">...</div> block.
+       TO REORDER: Cut and paste the blocks in the order you want.
+  ──────────────────────────────────────────────────────────────────────── -->
+  <div class="photo-grid" data-section="upan">
+
+<!-- DAY 3 IMAGES START -->
+
+<div class="photo-item"><img src="images/day-3/1.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/2.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/3.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/4.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/5.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/6.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/7.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/8.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/9.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/10.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/11.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/12.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/13.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/14.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/15.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/16.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/17.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/18.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/19.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/20.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/21.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/22.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/23.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/24.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/25.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/26.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/27.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/28.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/29.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/30.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/31.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/32.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/33.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/34.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/35.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/36.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/37.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/38.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/39.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/40.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/41.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/42.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/43.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/44.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/45.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/46.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/47.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/48.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/49.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/50.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/51.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/52.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/53.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/54.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/55.jpeg" loading="lazy"></div>
+<div class="photo-item"><img src="images/day-3/56.jpeg" loading="lazy"></div>
+
+<!-- DAY 3 IMAGES END -->
+</section>
+
+<!-- ====================================================
+     MOBILE CHAPTER NAV (bottom pill bar, mobile only)
+     ==================================================== -->
+<nav id="mobile-chapter-nav" aria-label="Chapter navigation">
+  <a href="#section-ganesh" class="mob-nav-btn" data-mob-nav="ganesh">Ganesh</a>
+  <a href="#section-grah"   class="mob-nav-btn" data-mob-nav="grah">Grah</a>
+  <a href="#section-upan"   class="mob-nav-btn" data-mob-nav="upan">Upanayan</a>
+</nav>
+
+<!-- ====================================================
+     FOOTER
+     ==================================================== -->
+<footer>
+  <span class="footer-om">ॐ</span>
+  <p class="footer-text">These memories are forever woven into the fabric of our hearts.</p>
+</footer>
+
+<!-- ====================================================
+     BACKGROUND MUSIC (optional, autoplay muted)
+     Replace src with your actual audio file path.
+     e.g. src="audio/background.mp3"
+     ==================================================== -->
+<audio id="bg-music" loop preload="none">
+  <source src="audio/bg-music.mp3" type="audio/mpeg">
+</audio>
+
+
+<!-- ====================================================
+     JAVASCRIPT
+     ==================================================== -->
+<script>
+/* ============================================================
+   0. TOUCH DETECTION — disable custom cursor on touch devices
+   ============================================================ */
+if (window.matchMedia('(hover: none)').matches) {
+  document.body.style.cursor = 'auto';
+}
+
+/* ============================================================
+   1. CUSTOM CURSOR (desktop only)
+   ============================================================ */
+const cursor     = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top  = my + 'px';
+});
+(function animRing() {
+  rx += (mx - rx) * .12;
+  ry += (my - ry) * .12;
+  cursorRing.style.left = rx + 'px';
+  cursorRing.style.top  = ry + 'px';
+  requestAnimationFrame(animRing);
+})();
+
+/* ============================================================
+   2. INTRO OVERLAY — dismiss after 3s
+   ============================================================ */
+const overlay = document.getElementById('intro-overlay');
+setTimeout(() => {
+  overlay.classList.add('hidden');
+  setTimeout(() => overlay.remove(), 1400);
+}, 3000);
+
+/* ============================================================
+   3. READING PROGRESS BAR
+   ============================================================ */
+const progressBar = document.getElementById('reading-progress');
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct       = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = pct + '%';
+}, { passive: true });
+
+/* ============================================================
+   4. STICKY NAV SCROLL EFFECT + ACTIVE CHAPTER
+   ============================================================ */
+const nav         = document.getElementById('main-nav');
+const navLinks    = document.querySelectorAll('[data-nav]');
+const mobNavLinks = document.querySelectorAll('[data-mob-nav]');
+const sections    = document.querySelectorAll('.memory-section');
+
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 80);
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 200) current = s.id.replace('section-', '');
+  });
+  navLinks.forEach(a    => a.classList.toggle('active', a.dataset.nav    === current));
+  mobNavLinks.forEach(a => a.classList.toggle('active', a.dataset.mobNav === current));
+}, { passive: true });
+
+/* ============================================================
+   5. AUTO-ASSIGN data-delay TO MEDIA ITEMS (cycles 1–8)
+   ============================================================ */
+document.querySelectorAll('.photo-grid').forEach(grid => {
+  grid.querySelectorAll('.photo-item').forEach((item, i) => {
+    item.dataset.delay = ((i % 8) + 1).toString();
+  });
+});
+
+/* ============================================================
+   6. MEDIA COUNT BADGES — counts both photos + videos
+   ============================================================ */
+document.querySelectorAll('[data-count-for]').forEach(badge => {
+  const section = badge.dataset.countFor;
+  const grid    = document.querySelector(`.photo-grid[data-section="${section}"]`);
+  if (grid) {
+    const n = grid.querySelectorAll('.photo-item').length;
+    badge.querySelector('.count-num').textContent = n;
+    if (n === 0) badge.style.display = 'none';
+  }
+});
+
+/* ============================================================
+   7. INTERSECTION OBSERVER — sections, reveal text, media items
+   ============================================================ */
+const ioOptions = { threshold: .12, rootMargin: '0px 0px -60px 0px' };
+
+const sectionObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+}, ioOptions);
+sections.forEach(s => sectionObserver.observe(s));
+
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+}, { threshold: .2 });
+document.querySelectorAll('.reveal-text').forEach(r => revealObserver.observe(r));
+
+const photoObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: .06, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.photo-item').forEach(p => photoObserver.observe(p));
+
+/* ============================================================
+   8. PARALLAX BACKGROUND
+   ============================================================ */
+const bgs = document.querySelectorAll('.section-bg');
+window.addEventListener('scroll', () => {
+  const sy = window.scrollY;
+  bgs.forEach(bg => {
+    const top    = bg.closest('.memory-section').offsetTop;
+    const offset = (sy - top) * .25;
+    bg.style.transform = `translateY(${offset}px)`;
+  });
+}, { passive: true });
+
+/* ============================================================
+   9. VIDEO ITEMS — play badge + playing class
+   ============================================================ */
+document.querySelectorAll('.photo-item.is-video').forEach(item => {
+  const vid = item.querySelector('video');
+  if (!vid) return;
+  vid.addEventListener('play',  () => item.classList.add('playing'));
+  vid.addEventListener('pause', () => item.classList.remove('playing'));
+  vid.addEventListener('ended', () => item.classList.remove('playing'));
+});
+
+/* ============================================================
+   10. DOWNLOAD BUTTON — stop click from bubbling to lightbox
+   ============================================================ */
+document.querySelectorAll('.download-btn').forEach(btn => {
+  btn.addEventListener('click', e => e.stopPropagation());
+});
+
+/* ============================================================
+   11. IMAGE LIGHTBOX
+   ============================================================ */
+const lightbox  = document.getElementById('lightbox');
+const lbImg     = document.getElementById('lb-img');
+const lbCaption = document.getElementById('lb-caption');
+const lbCounter = document.getElementById('lb-counter');
+let currentPhotos = [];
+let currentIndex  = 0;
+
+function openLightbox(photos, index) {
+  currentPhotos = photos;
+  currentIndex  = index;
+  showLbPhoto(false);
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  lightbox.classList.remove('active');
+  document.body.style.overflow = '';
+}
+function showLbPhoto(animate = true) {
+  const item = currentPhotos[currentIndex];
+  if (animate) {
+    lbImg.style.opacity   = '0';
+    lbImg.style.transform = 'scale(.95)';
+  }
+  const tmp = new Image();
+  tmp.onload = () => {
+    lbImg.src = item.src;
+    lbImg.alt = item.alt;
+    lbCaption.textContent = item.caption;
+    lbCounter.textContent = (currentIndex + 1) + ' / ' + currentPhotos.length;
+    requestAnimationFrame(() => {
+      lbImg.style.opacity   = '1';
+      lbImg.style.transform = 'scale(1)';
+    });
+  };
+  tmp.src = item.src;
+  lbCaption.textContent = item.caption;
+  lbCounter.textContent = (currentIndex + 1) + ' / ' + currentPhotos.length;
+}
+function lbStep(dir) {
+  lbImg.style.opacity   = '0';
+  lbImg.style.transform = `scale(.95) translateX(${dir * 30}px)`;
+  setTimeout(() => {
+    currentIndex = (currentIndex + dir + currentPhotos.length) % currentPhotos.length;
+    lbImg.style.transition = 'none';
+    lbImg.style.transform  = `scale(.95) translateX(${-dir * 20}px)`;
+    requestAnimationFrame(() => {
+      lbImg.style.transition = '';
+      showLbPhoto(true);
+    });
+  }, 220);
+}
+
+/* ============================================================
+   12. VIDEO LIGHTBOX
+   ============================================================ */
+const videoLightbox = document.getElementById('video-lightbox');
+const vlbVideo      = document.getElementById('vlb-video');
+const vlbCaption    = document.getElementById('vlb-caption');
+
+function openVideoLightbox(src, caption) {
+  vlbVideo.src             = src;
+  vlbVideo.currentTime     = 0;
+  vlbCaption.textContent   = caption;
+  videoLightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  // Small delay lets CSS transition settle before play
+  setTimeout(() => vlbVideo.play().catch(() => {}), 500);
+}
+function closeVideoLightbox() {
+  vlbVideo.pause();
+  vlbVideo.src = '';           // free memory
+  videoLightbox.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('vlb-close').addEventListener('click', closeVideoLightbox);
+videoLightbox.addEventListener('click', e => {
+  if (e.target === videoLightbox) closeVideoLightbox();
+});
+
+/* ============================================================
+   13. WIRE UP CLICK HANDLERS FOR ALL MEDIA ITEMS
+       — Images  → image lightbox (with grid navigation)
+       — Videos  → video lightbox (full-screen, native controls)
+   ============================================================ */
+document.querySelectorAll('.photo-grid').forEach(grid => {
+  // Build image-only array for lightbox prev/next navigation
+  const imageItems = Array.from(grid.querySelectorAll('.photo-item:not(.is-video)'));
+  const imageData  = imageItems.map(item => ({
+    src:     item.querySelector('img').src,
+    alt:     item.querySelector('img').alt,
+    caption: item.dataset.caption || ''
+  }));
+
+  // Image items → lightbox
+  imageItems.forEach((item, i) => {
+    item.addEventListener('click', () => openLightbox(imageData, i));
+  });
+
+  // Video items → video lightbox (click on item but NOT on native controls or download btn)
+  grid.querySelectorAll('.photo-item.is-video').forEach(item => {
+    item.addEventListener('click', e => {
+      // Let native video controls and download link handle themselves
+      if (e.target.closest('video') || e.target.closest('.download-btn')) return;
+      const vid = item.querySelector('video');
+      if (!vid) return;
+      openVideoLightbox(vid.src || vid.currentSrc, item.dataset.caption || '');
+    });
+  });
+});
+
+/* ============================================================
+   14. SHARED KEYBOARD + SWIPE CONTROLS
+   ============================================================ */
+document.getElementById('lb-close').addEventListener('click', closeLightbox);
+document.getElementById('lb-prev').addEventListener('click', () => lbStep(-1));
+document.getElementById('lb-next').addEventListener('click', () => lbStep(1));
+lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+
+document.addEventListener('keydown', e => {
+  if (lightbox.classList.contains('active')) {
+    if (e.key === 'ArrowLeft')  lbStep(-1);
+    if (e.key === 'ArrowRight') lbStep(1);
+    if (e.key === 'Escape')     closeLightbox();
+  }
+  if (videoLightbox.classList.contains('active')) {
+    if (e.key === 'Escape') closeVideoLightbox();
+  }
+});
+
+let touchStartX = 0;
+lightbox.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+lightbox.addEventListener('touchend',   e => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) lbStep(diff > 0 ? 1 : -1);
+});
+
+/* ============================================================
+   15. MUSIC TOGGLE
+   ============================================================ */
+const music    = document.getElementById('bg-music');
+const soundBtn  = document.getElementById('sound-toggle');
+const soundIcon = document.getElementById('sound-icon');
+const soundLbl  = document.getElementById('sound-label');
+let musicOn = false;
+
+soundBtn.addEventListener('click', () => {
+  if (!musicOn) {
+    music.volume = .18;
+    music.play().catch(() => {});
+    musicOn = true;
+    soundIcon.textContent = '♬';
+    soundLbl.textContent  = 'Pause';
+  } else {
+    music.pause();
+    musicOn = false;
+    soundIcon.textContent = '♪';
+    soundLbl.textContent  = 'Music';
+  }
+});
+
+/* ============================================================
+   16. FLOATING PETALS CANVAS — reduced to 15 for performance
+   ============================================================ */
+(function initPetals() {
+  const canvas = document.getElementById('petal-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  const PETAL_COUNT = 15; // ← reduced from 38 for better performance
+  const petals = [];
+  const colors = ['rgba(200,146,42,.55)', 'rgba(224,123,57,.45)', 'rgba(248,215,148,.4)', 'rgba(180,40,60,.35)'];
+
+  for (let i = 0; i < PETAL_COUNT; i++) {
+    petals.push({
+      x:     Math.random() * window.innerWidth,
+      y:     Math.random() * window.innerHeight * 2 - window.innerHeight,
+      r:     3 + Math.random() * 5,
+      vx:    (Math.random() - .5) * .5,
+      vy:    .3 + Math.random() * .6,
+      angle: Math.random() * Math.PI * 2,
+      spin:  (Math.random() - .5) * .04,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      opacity: .3 + Math.random() * .5
+    });
+  }
+
+  function drawPetal(p) {
+    ctx.save();
+    ctx.translate(p.x, p.y - window.scrollY * .08);
+    ctx.rotate(p.angle);
+    ctx.globalAlpha = p.opacity;
+    ctx.fillStyle   = p.color;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, p.r, p.r * 1.8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  (function animPetals() {
+    ctx.clearRect(0, 0, W, H);
+    petals.forEach(p => {
+      p.x     += p.vx;
+      p.y     += p.vy;
+      p.angle += p.spin;
+      if (p.y > H + 20)  { p.y = -20; p.x = Math.random() * W; }
+      if (p.x < -20)  p.x = W + 20;
+      if (p.x > W + 20) p.x = -20;
+      drawPetal(p);
+    });
+    requestAnimationFrame(animPetals);
+  })();
+})();
+
+/* ============================================================
+   17. SMOOTH SECTION SCROLL — page-turn effect
+       Works for BOTH desktop nav and mobile bottom nav
+   ============================================================ */
+const pageTurn = document.getElementById('page-turn');
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (!target) return;
+    pageTurn.classList.add('active');
+    setTimeout(() => {
+      target.scrollIntoView({ behavior: 'instant' });
+      pageTurn.classList.remove('active');
+      pageTurn.classList.add('closing');
+      setTimeout(() => pageTurn.classList.remove('closing'), 800);
+    }, 700);
+  });
+});
+
+/* ============================================================
+   18. PHOTO COUNT BADGE ENTRANCE ANIMATION
+   ============================================================ */
+const badgeObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity   = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: .5 });
+document.querySelectorAll('.photo-count-badge').forEach(b => {
+  b.style.opacity    = '0';
+  b.style.transform  = 'translateY(10px)';
+  b.style.transition = 'opacity .8s .6s ease, transform .8s .6s ease';
+  badgeObserver.observe(b);
+});
+</script>
+
+</body>
+</html>
