@@ -1452,7 +1452,7 @@ footer {
      Replace src with your actual audio file path.
      e.g. src="audio/background.mp3"
      ==================================================== -->
-<audio id="bg-music" loop preload="none">
+<audio id="bg-music" loop preload="auto">
   <source src="audio/bg-music.mp3" type="audio/mpeg">
 </audio>
 
@@ -1741,28 +1741,53 @@ lightbox.addEventListener('touchend',   e => {
 });
 
 /* ============================================================
-   15. MUSIC TOGGLE
-   ============================================================ */
-const music    = document.getElementById('bg-music');
+/* ============================================================
+   MUSIC SYSTEM (FINAL)
+============================================================ */
+const music     = document.getElementById('bg-music');
 const soundBtn  = document.getElementById('sound-toggle');
 const soundIcon = document.getElementById('sound-icon');
 const soundLbl  = document.getElementById('sound-label');
-let musicOn = false;
 
-soundBtn.addEventListener('click', () => {
-  if (!musicOn) {
-    music.volume = .18;
+let musicOn = false;
+let started = false;
+
+// Start music on first interaction
+function startMusic() {
+  if (!started) {
+    music.volume = 0.18;
     music.play().catch(() => {});
     musicOn = true;
-    soundIcon.textContent = '♬';
-    soundLbl.textContent  = 'Pause';
-  } else {
-    music.pause();
-    musicOn = false;
-    soundIcon.textContent = '♪';
-    soundLbl.textContent  = 'Music';
+    started = true;
+
+    if (soundIcon) soundIcon.textContent = '♬';
+    if (soundLbl)  soundLbl.textContent  = 'Pause';
   }
-});
+}
+
+// Trigger on ANY interaction
+document.addEventListener('click', startMusic);
+document.addEventListener('scroll', startMusic);
+document.addEventListener('touchstart', startMusic);
+
+// Button toggle
+if (soundBtn) {
+  soundBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+
+    if (!musicOn) {
+      music.play();
+      musicOn = true;
+      if (soundIcon) soundIcon.textContent = '♬';
+      if (soundLbl)  soundLbl.textContent  = 'Pause';
+    } else {
+      music.pause();
+      musicOn = false;
+      if (soundIcon) soundIcon.textContent = '♪';
+      if (soundLbl)  soundLbl.textContent  = 'Music';
+    }
+  });
+}
 
 /* ============================================================
    16. FLOATING PETALS CANVAS — reduced to 15 for performance
